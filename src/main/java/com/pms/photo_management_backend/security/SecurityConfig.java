@@ -14,6 +14,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.List;
 
@@ -21,6 +22,8 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    @Value("${app.frontend.url:}")
+    private String frontendUrl;
 
     public SecurityConfig(
             JwtAuthenticationFilter jwtAuthenticationFilter
@@ -208,11 +211,23 @@ public class SecurityConfig {
         CorsConfiguration configuration =
                 new CorsConfiguration();
 
-        configuration.setAllowedOrigins(
-                List.of(
-                        "http://localhost:5173"
-                )
-        );
+        if (frontendUrl != null && !frontendUrl.isBlank()) {
+
+            configuration.setAllowedOrigins(
+                    List.of(
+                            "http://localhost:5173",
+                            frontendUrl
+                    )
+            );
+
+        } else {
+
+            configuration.setAllowedOrigins(
+                    List.of(
+                            "http://localhost:5173"
+                    )
+            );
+        }
 
         configuration.setAllowedMethods(
                 List.of(
