@@ -28,7 +28,7 @@ public class DataInitializer {
         return args -> {
 
             // Admin credentials configure केले नसतील
-            // तर नवीन default admin तयार करायचा नाही.
+            // तर initialization skip करा.
             if (
                     adminEmail == null ||
                             adminEmail.isBlank() ||
@@ -43,27 +43,18 @@ public class DataInitializer {
                 return;
             }
 
-            // Same email चा admin आधीपासून असल्यास
-            // duplicate account तयार होणार नाही.
+            // Admin आधीपासून database मध्ये असल्यास
+            // password किंवा account मध्ये कोणताही बदल करू नका.
             if (userRepository.existsByEmail(adminEmail)) {
 
-                User existingAdmin = userRepository
-                        .findByEmail(adminEmail)
-                        .orElseThrow();
-
-                existingAdmin.setPasswordHash(
-                        passwordEncoder.encode(adminPassword)
-                );
-
-                userRepository.save(existingAdmin);
-
                 System.out.println(
-                        "Main Admin password updated successfully."
+                        "Main Admin already exists."
                 );
 
                 return;
             }
 
+            // Admin database मध्ये नसेल तरच नवीन admin तयार करा.
             User admin = new User();
 
             admin.setName("Main Admin");
@@ -72,20 +63,13 @@ public class DataInitializer {
             admin.setMobile("9999999999");
 
             admin.setPasswordHash(
-                    passwordEncoder.encode(
-                            adminPassword
-                    )
+                    passwordEncoder.encode(adminPassword)
             );
 
-            admin.setRole(
-                    Role.MAIN_ADMIN
-            );
-
+            admin.setRole(Role.MAIN_ADMIN);
             admin.setActive(true);
 
-            userRepository.save(
-                    admin
-            );
+            userRepository.save(admin);
 
             System.out.println(
                     "Main Admin created successfully."
