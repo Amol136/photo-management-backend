@@ -211,24 +211,14 @@ public class SecurityConfig {
         CorsConfiguration configuration =
                 new CorsConfiguration();
 
-        if (frontendUrl != null && !frontendUrl.isBlank()) {
-
-            configuration.setAllowedOrigins(
-                    List.of(
-                            "http://localhost:5173",
-                            frontendUrl
-                    )
-            );
-
-        } else {
-
-            configuration.setAllowedOrigins(
-                    List.of(
-                            "http://localhost:5173"
-                    )
-            );
-        }
-
+        configuration.setAllowedOrigins(
+                List.of(
+                        "http://localhost:5173",
+                        "https://hotel-main-admin1.vercel.app",
+                        "https://hotel-sub-admin1.vercel.app",
+                        "https://hotel-manager-pearl.vercel.app"
+                )
+        );
         configuration.setAllowedMethods(
                 List.of(
                         "GET",
