@@ -47,8 +47,18 @@ public class DataInitializer {
             // duplicate account तयार होणार नाही.
             if (userRepository.existsByEmail(adminEmail)) {
 
+                User existingAdmin = userRepository
+                        .findByEmail(adminEmail)
+                        .orElseThrow();
+
+                existingAdmin.setPasswordHash(
+                        passwordEncoder.encode(adminPassword)
+                );
+
+                userRepository.save(existingAdmin);
+
                 System.out.println(
-                        "Main Admin already exists."
+                        "Main Admin password updated successfully."
                 );
 
                 return;
